@@ -25,7 +25,7 @@ object CatsTypeClasses {
     functor.map(container)(_ + 1)
 
   import cats.syntax.functor.*
-  def increment_v2[F[_] : Functor](container: F[Int]): F[Int] =
+  def increment_v2[F[_]: Functor](container: F[Int]): F[Int] =
     container.map(_ + 1)
 
   // applicative - the ability to "wrap" types
@@ -47,7 +47,7 @@ object CatsTypeClasses {
   import cats.FlatMap
   val flatMapList = FlatMap[List]
   import cats.syntax.flatMap.* // flatMap extension method
-  def crossProduct[F[_] : FlatMap, A, B](fa: F[A], fb: F[B]): F[(A, B)] =
+  def crossProduct[F[_]: FlatMap, A, B](fa: F[A], fb: F[B]): F[(A, B)] =
     fa.flatMap(a => fb.map(b => (a, b)))
 
   // Monad - applicative + flatMap
@@ -58,7 +58,7 @@ object CatsTypeClasses {
 
   import cats.Monad
   val monadList = Monad[List]
-  def crossProduct_v2[F[_] : Monad, A, B](fa: F[A], fb: F[B]): F[(A, B)] =
+  def crossProduct_v2[F[_]: Monad, A, B](fa: F[A], fb: F[B]): F[(A, B)] =
     for {
       a <- fa
       b <- fb
@@ -96,9 +96,10 @@ object CatsTypeClasses {
   val listOfOptions: List[Option[Int]] = List(Some(1), Some(2), Some(43))
   import cats.Traverse
   val listTraverse = Traverse[List]
-  val optionList: Option[List[Int]] = listTraverse.traverse(List(1,2,3))(x => Option(x))
+  val optionList: Option[List[Int]] =
+    listTraverse.traverse(List(1, 2, 3))(x => Option(x))
   import cats.syntax.traverse.*
-  val optionList_v2: Option[List[Int]] = List(1,2,3).traverse(x => Option(x))
+  val optionList_v2: Option[List[Int]] = List(1, 2, 3).traverse(x => Option(x))
 
   /*
     Big(ger) type class hierarchy in Cats:
@@ -113,7 +114,5 @@ object CatsTypeClasses {
          |
          ----> Traverse
    */
-  def main(args: Array[String]): Unit = {
-
-  }
+  def main(args: Array[String]): Unit = {}
 }
